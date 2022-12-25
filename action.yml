@@ -4,7 +4,7 @@ inputs:
   file-whitelist:
     description: 'JSON array of glob expressions corresponding to files/extensions that should be updated.'
     required: false
-    default: '["*.md", "*.rst", "*.txt", "*.json", "*.yml", "*.xml"]'
+    default: '["**/*.md", "**/*.rst", "**/*.txt", "**/*.json", "**/*.yml", "**/*.xml"]'
   file-blacklist:
     description: 'JSON array of glob expressions corresponding to files/extensions that should not be updated. Overrides the whitelist.'
     required: false
