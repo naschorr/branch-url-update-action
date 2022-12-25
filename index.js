@@ -20,7 +20,7 @@ async function findCandidateFiles(whitelist, blacklist) {
 
 (async () => {
     try {
-        const fileWhitelist = JSON.parse('["**/*"]'); //core.getInput('file-whitelist') || '[]');
+        const fileWhitelist = JSON.parse('["*"]'); //core.getInput('file-whitelist') || '[]');
         const fileBlacklist = JSON.parse(core.getInput('file-blacklist') || '[]');
     
         console.log(fileWhitelist)
