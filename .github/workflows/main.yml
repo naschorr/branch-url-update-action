@@ -1,0 +1,12 @@
+on: [push]
+
+jobs:
+  current_branch_text_updater_job:
+    runs-on: ubuntu-latest
+    name: Update branch reference to use the current branch
+    steps:
+      - name: Branch update action step
+        id: update
+        uses: naschorr/current-branch-text-updater-action@v0.0.1
+      - name: Get the updated file paths
+        run: echo "Files ${{ steps.update.outputs.updated-files }}"
