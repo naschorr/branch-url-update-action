@@ -1,0 +1,25 @@
+{
+  "name": "current-branch-text-updater-action",
+  "version": "1.0.0",
+  "description": "Updates GitHub links in text files (Markdown, reStructuredText, etc) to point to the current branch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naschorr/current-branch-text-updater-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naschorr/current-branch-text-updater-action/issues"
+  },
+  "homepage": "https://github.com/naschorr/current-branch-text-updater-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "@actions/glob": "^0.3.0"
+  }
+}
