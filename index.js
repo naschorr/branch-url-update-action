@@ -6,12 +6,8 @@ async function findCandidateFiles(whitelist, blacklist) {
     const whitelistGlobber = await glob.create(whitelist.join('\n'));
     const whitelistedFiles = await whitelistGlobber.glob();
 
-    console.log(whitelistGlobber, whitelistedFiles);
-
     const blacklistGlobber = await glob.create(blacklist.join('\n'));
     const blacklistedFiles = await blacklistGlobber.glob();
-
-    console.log(blacklistGlobber, blacklistedFiles);
 
     return whitelistedFiles.filter(whitelistPath => {
         return !(blacklistedFiles.some(blacklistPath => whitelistPath == blacklistPath));
