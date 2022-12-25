@@ -7,6 +7,6 @@ jobs:
     steps:
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.12
+        uses: naschorr/current-branch-text-updater-action@v0.0.13
       - name: Get the updated file paths
         run: echo "Files ${{ steps.update.outputs.updated-files }}"
