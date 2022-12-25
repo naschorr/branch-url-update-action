@@ -16,13 +16,14 @@ async function findCandidateFiles(whitelist, blacklist) {
 
 (async () => {
     try {
-        const fileWhitelist = JSON.parse(core.getInput('file-whitelist') | []);
-        const fileBlacklist = JSON.parse(core.getInput('file-blacklist') | []);
-    
-        const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
+        const fileWhitelist = JSON.parse(core.getInput('file-whitelist') | '[]');
+        const fileBlacklist = JSON.parse(core.getInput('file-blacklist') | '[]');
     
         console.log(fileWhitelist)
         console.log(fileBlacklist)
+
+        const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
+    
         console.log(files)
     
         core.setOutput('updated-files', files);
