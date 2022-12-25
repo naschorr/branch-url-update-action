@@ -15,10 +15,12 @@ async function findCandidateFiles(whitelist, blacklist) {
 }
 
 function buildRepoUrlRegex() {
-    // https://raw.githubusercontent.com/naschorr/hawking/master/resources/hawking-avatar.png
-    // https://github.com/naschorr/hawking/blob/master/resources/hawking-avatar.png
+    let repository = github.context.payload.repository.full_name;
+    repository.replace('/', '\/');
 
     const pattern = `https?:\/\/.*github.*\.com\/${repository}\/(?:blob\/)?(\S+?)\/`;
+
+    return new RegExp(pattern);
 }
 
 // async function findRepoUrls(url) {
@@ -27,9 +29,6 @@ function buildRepoUrlRegex() {
 
 (async () => {
     try {
-        console.log(github)
-        console.log(core)
-
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = github.context.payload;
         console.log(`The event payload: ${JSON.stringify(payload, undefined, 2)}`);
@@ -41,8 +40,10 @@ function buildRepoUrlRegex() {
         console.log(`Blacklist: ${fileBlacklist}`);
 
         const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
+        const regex = buildRepoUrlRegex();
     
         console.log(`Evaluated files: ${files}`);
+        console.log(`Regex ${regex}`)
     
 
 
