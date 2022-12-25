@@ -14,23 +14,39 @@ async function findCandidateFiles(whitelist, blacklist) {
     });
 }
 
+function buildRepoUrlRegex() {
+    // https://raw.githubusercontent.com/naschorr/hawking/master/resources/hawking-avatar.png
+    // https://github.com/naschorr/hawking/blob/master/resources/hawking-avatar.png
+
+    const pattern = `https?:\/\/.*github.*\.com\/${repository}\/(?:blob\/)?(\S+?)\/`;
+}
+
+// async function findRepoUrls(url) {
+
+// }
+
 (async () => {
     try {
+        console.log(github)
+        console.log(core)
+
+        // Get the JSON webhook payload for the event that triggered the workflow
+        const payload = github.context.payload;
+        console.log(`The event payload: ${JSON.stringify(payload, undefined, 2)}`);
+
         const fileWhitelist = JSON.parse(core.getInput('file-whitelist') || '[]');
         const fileBlacklist = JSON.parse(core.getInput('file-blacklist') || '[]');
     
-        console.log(fileWhitelist)
-        console.log(fileBlacklist)
+        console.log(`Whitelist: ${fileWhitelist}`);
+        console.log(`Blacklist: ${fileBlacklist}`);
 
         const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
     
-        console.log(files)
+        console.log(`Evaluated files: ${files}`);
     
+
+
         core.setOutput('updated-files', files);
-    
-        // Get the JSON webhook payload for the event that triggered the workflow
-        const payload = JSON.stringify(github.context.payload, undefined, 2)
-        console.log(`The event payload: ${payload}`);
     } catch (error) {
         core.setFailed(error.message);
     }
