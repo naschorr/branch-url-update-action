@@ -8,7 +8,7 @@ inputs:
   file-blacklist:
     description: 'JSON array of glob expressions corresponding to files/extensions that should not be updated. Overrides the whitelist.'
     required: false
-    default: '["**/node_modules/**", "**/.github/**"]'
+    default: '["node_modules/**", ".github/**"]'
 outputs:
   updated-files:
     description: 'JSON array of paths to files that were updated.'
