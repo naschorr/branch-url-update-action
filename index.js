@@ -14,21 +14,23 @@ async function findCandidateFiles(whitelist, blacklist) {
     });
 }
 
-try {
-    const fileWhitelist = JSON.parse(core.getInput('file-whitelist') | []);
-    const fileBlacklist = JSON.parse(core.getInput('file-blacklist') | []);
-
-    const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
-
-    console.log(fileWhitelist)
-    console.log(fileBlacklist)
-    console.log(files)
-
-    core.setOutput('updated-files', files);
-
-    // Get the JSON webhook payload for the event that triggered the workflow
-    const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`The event payload: ${payload}`);
-} catch (error) {
-    core.setFailed(error.message);
-}
+(async () => {
+    try {
+        const fileWhitelist = JSON.parse(core.getInput('file-whitelist') | []);
+        const fileBlacklist = JSON.parse(core.getInput('file-blacklist') | []);
+    
+        const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
+    
+        console.log(fileWhitelist)
+        console.log(fileBlacklist)
+        console.log(files)
+    
+        core.setOutput('updated-files', files);
+    
+        // Get the JSON webhook payload for the event that triggered the workflow
+        const payload = JSON.stringify(github.context.payload, undefined, 2)
+        console.log(`The event payload: ${payload}`);
+    } catch (error) {
+        core.setFailed(error.message);
+    }
+})();
