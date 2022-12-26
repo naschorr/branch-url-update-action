@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const glob = require('@actions/glob');
 const fs = require('fs');
+const { off } = require('process');
 
 async function findCandidateFiles(whitelist, blacklist) {
     const whitelistGlobber = await glob.create(whitelist.join('\n'));
@@ -44,11 +45,12 @@ function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         let offset = 0;
 
         matches.forEach(match => {
-            console.log(...match, match, match.index);
-
             const sourceBranch = match[1];  // first (and only) match group
             const index = match.index + offset;
             const size = sourceBranch.length;
+
+            console.log(sourceBranch, index, size, offset);
+            console.log(data.substring(0, index), targetBranch, data.substring(index + size));
 
             data = data.substring(0, index) + targetBranch + data.substring(index + size);
 
