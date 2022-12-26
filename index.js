@@ -44,6 +44,8 @@ function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         let offset = 0;
 
         matches.forEach(match => {
+            console.log(match);
+
             const sourceBranch = match[1];  // first (and only) match group
             const index = match.index + offset;
             const size = sourceBranch.length;
