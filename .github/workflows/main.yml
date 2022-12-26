@@ -15,9 +15,14 @@ jobs:
 
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.42
+        uses: naschorr/current-branch-text-updater-action@v0.0.43
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
+
+      - name: Commit changes back into repo
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated repository branch names"
 
       - name: Get the updated file paths
         run: echo "Files ${{ steps.update.outputs.updated-files }}"

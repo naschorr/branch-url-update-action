@@ -51,8 +51,6 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
 
         await fs.promises.writeFile(file, data, 'utf-8');
 
-        console.log(data);
-
         return true;
     } else {
         return false;
