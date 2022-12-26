@@ -51,33 +51,12 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
 
         await fs.promises.writeFile(file, data, 'utf-8');
 
+        console.log(data);
+
         return true;
     } else {
         return false;
     }
-
-    // fs.readFile(file, 'utf8', (err, data) => {
-    //     if (err) {
-    //       console.error(err);
-    //       return;
-    //     }
-
-    //     const matches = [...data.matchAll(repoUrlRegex)];
-    //     let offset = 0;
-
-    //     matches.forEach(match => {
-    //         // Why are JS RegExp groups so janky?
-    //         const sourceBranch = match[2];
-    //         const size = sourceBranch.length;
-    //         const index = match.index + match[1].length + offset;
-
-    //         data = data.substring(0, index) + targetBranch + data.substring(index + size);
-
-    //         offset += targetBranch.length - size;
-    //     });
-
-    //     fs.writeFile(file, data, 'utf-8');
-    // });
 }
 
 async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
@@ -114,6 +93,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         console.log(`Evaluated files: ${files}`);
     
         const updatedFiles = await walkFilesAndUpdateRepoBranches(branch, files);
+        console.log(`Updated files: ${updatedFiles}`)
 
         core.setOutput('updated-files', updatedFiles);
     } catch (error) {
