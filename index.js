@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const glob = require('@actions/glob');
-const {promise: {readFile, writeFile}} = require('fs');
+const fs = require('fs');
 
 async function findCandidateFiles(whitelist, blacklist) {
     const whitelistGlobber = await glob.create(whitelist.join('\n'));
@@ -31,28 +31,30 @@ async function validateBranch(branch) {
 
 }
 
-function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
-    return readFile(file)
-        .then(data => {
-            const matches = [...data.matchAll(repoUrlRegex)];
-            let offset = 0;
+async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
+    const data = await fs.promises.readFile(file, 'utf-8');
 
-            matches.forEach(match => {
-                // Why are JS RegExp groups so janky?
-                const sourceBranch = match[2];
-                const size = sourceBranch.length;
-                const index = match.index + match[1].length + offset;
+    const matches = [...data.matchAll(repoUrlRegex)];
+    let offset = 0;
 
-                data = data.substring(0, index) + targetBranch + data.substring(index + size);
+    if (matches.length > 0) {
+        matches.forEach(match => {
+            // Why are JS RegExp groups so janky?
+            const sourceBranch = match[2];
+            const size = sourceBranch.length;
+            const index = match.index + match[1].length + offset;
 
-                offset += targetBranch.length - size;
-            });
+            data = data.substring(0, index) + targetBranch + data.substring(index + size);
 
-            writeFile(file);
-        })
-        .catch(error => {
-            console.error(error);
-        })
+            offset += targetBranch.length - size;
+        });
+
+        await fs.promises.writeFile(file, data, 'utf-8');
+
+        return true;
+    } else {
+        return false;
+    }
 
     // fs.readFile(file, 'utf8', (err, data) => {
     //     if (err) {
@@ -82,23 +84,13 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
     const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
 
     const updatedFiles = [];
-    files.forEach(file => {
-        let updated = undefined;
-        
-        updateRepoUrlsInFile(file, regex, targetBranch)
-            .then((resolve, reject) => {
-                if (!!resolve) {
-                    updated = true;
-                }
-                if (!!reject) {
-                    updated = false;
-                }
-            });
+    for (const file of files) {
+        const updated = await updateRepoUrlsInFile(file, regex, targetBranch);
 
         if (updated) {
             updatedFiles.push(file);
         }
-    });
+    };
 
     return updatedFiles;
 }
