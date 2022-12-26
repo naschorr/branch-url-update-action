@@ -32,7 +32,7 @@ async function validateBranch(branch) {
 }
 
 async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
-    const data = await fs.promises.readFile(file, 'utf-8');
+    let data = await fs.promises.readFile(file, 'utf-8');
 
     const matches = [...data.matchAll(repoUrlRegex)];
     let offset = 0;
@@ -84,8 +84,8 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
     const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
 
     const updatedFiles = [];
-    for (let file of files) {
-        let updated = await updateRepoUrlsInFile(file, regex, targetBranch);
+    for (const file of files) {
+        const updated = await updateRepoUrlsInFile(file, regex, targetBranch);
 
         if (updated) {
             updatedFiles.push(file);
