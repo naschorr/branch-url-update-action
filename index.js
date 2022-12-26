@@ -1,8 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const glob = require('@actions/glob');
-const fs = require('fs');
-const { off } = require('process');
+const {promise: {readFile, writeFile}} = require('fs');
 
 async function findCandidateFiles(whitelist, blacklist) {
     const whitelistGlobber = await glob.create(whitelist.join('\n'));
@@ -33,30 +32,50 @@ async function validateBranch(branch) {
 }
 
 function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
-    fs.readFile(file, 'utf8', (err, data) => {
-        console.log(`Reading ${data}`);
+    return readFile(file)
+        .then(data => {
+            const matches = [...data.matchAll(repoUrlRegex)];
+            let offset = 0;
 
-        if (err) {
-          console.error(err);
-          return;
-        }
+            matches.forEach(match => {
+                // Why are JS RegExp groups so janky?
+                const sourceBranch = match[2];
+                const size = sourceBranch.length;
+                const index = match.index + match[1].length + offset;
 
-        const matches = [...data.matchAll(repoUrlRegex)];
-        let offset = 0;
+                data = data.substring(0, index) + targetBranch + data.substring(index + size);
 
-        matches.forEach(match => {
-            // Why are JS RegExp groups so janky?
-            const sourceBranch = match[2];
-            const size = sourceBranch.length;
-            const index = match.index + match[1].length + offset;
+                offset += targetBranch.length - size;
+            });
 
-            data = data.substring(0, index) + targetBranch + data.substring(index + size);
+            writeFile(file);
+        })
+        .catch(error => {
+            console.error(error);
+        })
 
-            offset += targetBranch.length - size;
-        });
+    // fs.readFile(file, 'utf8', (err, data) => {
+    //     if (err) {
+    //       console.error(err);
+    //       return;
+    //     }
 
-        console.log(`Writing ${data}`);
-    });
+    //     const matches = [...data.matchAll(repoUrlRegex)];
+    //     let offset = 0;
+
+    //     matches.forEach(match => {
+    //         // Why are JS RegExp groups so janky?
+    //         const sourceBranch = match[2];
+    //         const size = sourceBranch.length;
+    //         const index = match.index + match[1].length + offset;
+
+    //         data = data.substring(0, index) + targetBranch + data.substring(index + size);
+
+    //         offset += targetBranch.length - size;
+    //     });
+
+    //     fs.writeFile(file, data, 'utf-8');
+    // });
 }
 
 async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
@@ -64,7 +83,17 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
 
     const updatedFiles = [];
     files.forEach(file => {
-        const updated = updateRepoUrlsInFile(file, regex, targetBranch);
+        let updated = undefined;
+        
+        updateRepoUrlsInFile(file, regex, targetBranch)
+            .then((resolve, reject) => {
+                if (!!resolve) {
+                    updated = true;
+                }
+                if (!!reject) {
+                    updated = false;
+                }
+            });
 
         if (updated) {
             updatedFiles.push(file);
