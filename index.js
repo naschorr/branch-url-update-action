@@ -48,7 +48,7 @@ function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
             // Why are JS RegExp groups so janky?
             const sourceBranch = match[2];
             const size = sourceBranch.length;
-            const index = match[1].length + offset;
+            const index = match.index + match[1].length + offset;
 
             data = data.substring(0, index) + targetBranch + data.substring(index + size);
 
