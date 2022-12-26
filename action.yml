@@ -9,6 +9,9 @@ inputs:
     description: 'JSON array of glob expressions corresponding to files/extensions that should not be updated. Overrides the whitelist.'
     required: false
     default: '["node_modules/**", ".github/**"]'
+  target-branch:
+    description: 'The name of the branch being merged in to.'
+    required: true
 outputs:
   updated-files:
     description: 'JSON array of paths to files that were updated.'

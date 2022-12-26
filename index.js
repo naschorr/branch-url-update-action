@@ -14,13 +14,22 @@ async function findCandidateFiles(whitelist, blacklist) {
     });
 }
 
-function buildRepoUrlRegex() {
-    let repository = github.context.payload.repository.full_name;
-    repository.replace('/', '\/');
-
-    const pattern = `https?:\/\/.*github.*\.com\/${repository}\/(?:blob\/)?(\S+?)\/`;
+/**
+ * Builds a RegExp to handle finding repository URLs
+ * @param {string} repository The owner/repository name string (ex: torvalds/linux)
+ * @returns RegExp for finding repo URLs
+ */
+function buildRepoUrlRegex(repository) {
+    const regexPreppedRepository = repository.replace('/', '\/');
+    const pattern = `https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?(\S+?)\/`;
 
     return new RegExp(pattern);
+}
+
+async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
+    files.forEach(file => {
+        return;
+    });
 }
 
 // async function findRepoUrls(url) {
@@ -39,13 +48,15 @@ function buildRepoUrlRegex() {
         console.log(`Whitelist: ${fileWhitelist}`);
         console.log(`Blacklist: ${fileBlacklist}`);
 
+        const branch = core.getInput('target-branch');
         const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
-        const regex = buildRepoUrlRegex();
+        const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
     
+        console.log(`Branch: ${branch}`)
         console.log(`Evaluated files: ${files}`);
-        console.log(`Regex ${regex}`)
+        console.log(`Regex: ${regex}`)
     
-
+        await walkFilesAndUpdateRepoBranches(branch, files);
 
         core.setOutput('updated-files', files);
     } catch (error) {

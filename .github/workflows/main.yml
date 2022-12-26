@@ -7,8 +7,17 @@ jobs:
     steps:
       - name: Checkout repo (all further actions are run from the repo root)
         uses: actions/checkout@v3.2.0
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_REF_NAME)"
+        id: extract_branch
+        with:
+          target-branch: ${{ steps.extract_branch.outputs.branch }}
+
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.20
+        uses: naschorr/current-branch-text-updater-action@v0.0.21
+
       - name: Get the updated file paths
         run: echo "Files ${{ steps.update.outputs.updated-files }}"
