@@ -84,7 +84,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
     const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
 
     const updatedFiles = [];
-    for (const file of files) {
+    for (let file of files) {
         let updated = await updateRepoUrlsInFile(file, regex, targetBranch);
 
         if (updated) {
