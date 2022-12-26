@@ -23,7 +23,7 @@ async function findCandidateFiles(whitelist, blacklist) {
  */
 function buildRepoUrlRegex(repository) {
     const regexPreppedRepository = repository.replace('/', '\/');
-    const pattern = `https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?(.+?)\/`;
+    const pattern = `(https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?)(.+?)(\/)`;
 
     return new RegExp(pattern, 'g');
 }
@@ -45,12 +45,10 @@ function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         let offset = 0;
 
         matches.forEach(match => {
-            const sourceBranch = match[1];  // first (and only) match group
-            const index = match.index + offset;
+            // Why are JS RegExp groups so janky?
+            const sourceBranch = match[2];
             const size = sourceBranch.length;
-
-            console.log(sourceBranch, index, size, offset);
-            console.log(data.substring(0, index), targetBranch, data.substring(index + size));
+            const index = match[1].length + offset;
 
             data = data.substring(0, index) + targetBranch + data.substring(index + size);
 
