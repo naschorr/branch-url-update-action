@@ -85,7 +85,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
 
     const updatedFiles = [];
     for (const file of files) {
-        const updated = await updateRepoUrlsInFile(file, regex, targetBranch);
+        let updated = await updateRepoUrlsInFile(file, regex, targetBranch);
 
         if (updated) {
             updatedFiles.push(file);
