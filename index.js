@@ -31,8 +31,11 @@ async function validateBranch(branch) {
 
 }
 
-async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
+function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
+    console.log(`pre read ${file}`);
     fs.readFile(file, 'utf8', (err, data) => {
+        console.log(`post read ${file}`);
+
         if (err) {
           console.error(err);
           return;
