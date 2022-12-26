@@ -22,7 +22,7 @@ async function findCandidateFiles(whitelist, blacklist) {
  */
 function buildRepoUrlRegex(repository) {
     const regexPreppedRepository = repository.replace('/', '\/');
-    const pattern = `https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?(\S+?)\/`;
+    const pattern = `https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?(.+?)\/`;
 
     return new RegExp(pattern, 'g');
 }
@@ -32,27 +32,28 @@ async function validateBranch(branch) {
 }
 
 function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
-    console.log(`pre read ${file}`);
     fs.readFile(file, 'utf8', (err, data) => {
-        console.log(`post read ${file}`);
+        console.log(`Reading ${data}`);
 
         if (err) {
           console.error(err);
           return;
         }
 
-        let updatedInstances = 0;
-        let result;
+        const matches = [...data.matchAll(repoUrlRegex)];
+        let offset = 0;
 
-        result = data.replace(repoUrlRegex, targetBranch);
-        console.log(result, repoUrlRegex);
+        matches.forEach(match => {
+            const sourceBranch = match[1];  // first (and only) match group
+            const index = match.index + offset;
+            const size = len(sourceBranch);
 
-        // while ((result = repoUrlRegex.exec(data)) !== null) {
-        //     updatedInstances += 1;
-        //     console.log(result, repoUrlRegex);
-        // }
+            data = data.substring(0, index) + targetBranch + data.substring(index + size);
 
-        return updatedInstances > 0;
+            offset += len(targetBranch) - size;
+        });
+
+        console.log(`Writing ${data}`);
     });
 }
 
