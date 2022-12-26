@@ -12,12 +12,12 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo $GITHUB_REF_NAME)"
         id: extract_branch
-        with:
-          target-branch: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.21
+        uses: naschorr/current-branch-text-updater-action@v0.0.22
+        with:
+          target-branch: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Get the updated file paths
         run: echo "Files ${{ steps.update.outputs.updated-files }}"
