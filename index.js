@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const glob = require('@actions/glob')
+const glob = require('@actions/glob');
+const fs = require('fs');
 
 async function findCandidateFiles(whitelist, blacklist) {
     const whitelistGlobber = await glob.create(whitelist.join('\n'));
@@ -26,15 +27,42 @@ function buildRepoUrlRegex(repository) {
     return new RegExp(pattern);
 }
 
-async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
-    files.forEach(file => {
-        return;
+async function validateBranch(branch) {
+
+}
+
+async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
+    fs.readFile(file, 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        let updatedInstances = 0;
+        let result;
+        while ((result = repoUrlRegex.exec(data)) !== null) {
+            updatedInstances += 1;
+            console.log(result, repoUrlRegex);
+        }
+
+        return updatedInstances > 0;
     });
 }
 
-// async function findRepoUrls(url) {
+async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
+    const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
 
-// }
+    const updatedFiles = [];
+    files.forEach(file => {
+        const updated = updateRepoUrlsInFile(file, regex, targetBranch);
+
+        if (updated) {
+            updatedFiles.push(file);
+        }
+    });
+
+    return updatedFiles;
+}
 
 (async () => {
     try {
@@ -50,15 +78,13 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
 
         const branch = core.getInput('target-branch');
         const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
-        const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
     
         console.log(`Branch: ${branch}`)
         console.log(`Evaluated files: ${files}`);
-        console.log(`Regex: ${regex}`)
     
-        await walkFilesAndUpdateRepoBranches(branch, files);
+        const updatedFiles = await walkFilesAndUpdateRepoBranches(branch, files);
 
-        core.setOutput('updated-files', files);
+        core.setOutput('updated-files', updatedFiles);
     } catch (error) {
         core.setFailed(error.message);
     }
