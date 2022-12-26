@@ -43,6 +43,10 @@ function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
 
         let updatedInstances = 0;
         let result;
+
+        result = repoUrlRegex.exec(data)
+        console.log(result, repoUrlRegex);
+
         while ((result = repoUrlRegex.exec(data)) !== null) {
             updatedInstances += 1;
             console.log(result, repoUrlRegex);
