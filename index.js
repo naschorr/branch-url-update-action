@@ -24,7 +24,7 @@ function buildRepoUrlRegex(repository) {
     const regexPreppedRepository = repository.replace('/', '\/');
     const pattern = `https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?(\S+?)\/`;
 
-    return new RegExp(pattern);
+    return new RegExp(pattern, 'g');
 }
 
 async function validateBranch(branch) {
@@ -44,7 +44,7 @@ function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         let updatedInstances = 0;
         let result;
 
-        result = data.replaceAll(repoUrlRegex, targetBranch);
+        result = data.replace(repoUrlRegex, targetBranch);
         console.log(result, repoUrlRegex);
 
         // while ((result = repoUrlRegex.exec(data)) !== null) {
