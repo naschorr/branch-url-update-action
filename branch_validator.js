@@ -6,9 +6,6 @@ class BranchValidator {
         this.repository = repository;
 
         this._branches = [];
-        this.getBranchNames().then(branches => this._branches = branches);
-
-        console.log(this.branches);
     }
 
     // Properties
@@ -36,7 +33,11 @@ class BranchValidator {
         return branches;
     }
 
-    isValidBranchName(branchName) {
+    async isValidBranchName(branchName) {
+        if (this._branches.length == 0) {
+            this._branches = await this.getBranchNames();
+        }
+
         return this.branches.includes(branchName);
     }
 }
