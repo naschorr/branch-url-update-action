@@ -56,10 +56,6 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
     let updates = 0;
     let offset = 0;
     for (const match of matches) {
-        console.log("Before =================================================================================")
-        console.log(data);
-        console.log('========================================================================================');
-
         // Why are JS RegExp groups so janky?
         const sourceBranch = match[2];
         const size = sourceBranch.length;
@@ -72,9 +68,7 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         }
 
         // Was the old match a valid branch? Some false positives will crop up (ex: wikis)
-        const val = BRANCH_VALIDATOR.isValidBranchName(sourceBranch);
-        console.log(`Validating branch: ${sourceBranch} - ${val}`);
-        if (!val) {
+        if (!(await BRANCH_VALIDATOR.isValidBranchName(sourceBranch))) {
             console.log(`${sourceBranch} is invalid, continuing`);
             continue;
         }
@@ -88,10 +82,6 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
             inserted into the correct spot.
         */
         offset += targetBranch.length - size;
-
-        console.log("After ==================================================================================")
-        console.log(data);
-        console.log('========================================================================================');
     };
 
     // Save our changes
@@ -136,7 +126,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         const fileBlacklist = JSON.parse(core.getInput('file-blacklist') || '[]');
 
         const branch = core.getInput('target-branch');
-        if (!BRANCH_VALIDATOR.isValidBranchName(branch)) {
+        if (!(await BRANCH_VALIDATOR.isValidBranchName(branch))) {
             console.log(`Target branch "${branch}" isn't a valid branch.`);
             return;
         }
