@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const glob = require('@actions/glob');
 const fs = require('fs');
 const octokit = require('@octokit/action');
-const octokidAuth = require('')
+const octokitAuth = require('@octokit/auth-action');
 
 // const auth = createActionAuth();
 // const authentication = await auth();
