@@ -21,7 +21,7 @@ class BranchValidator {
 
     async getBranchNames() {
         // Get repo's branches and handle invalid responses
-        const response = await OCTOKIT.request('GET /repos/{owner}/{repo}/branches{?protected,per_page,page}', {
+        const response = await this.octokit.request('GET /repos/{owner}/{repo}/branches{?protected,per_page,page}', {
             owner: this.repository.owner_name,
             repo: this.repository.repository_name
         });

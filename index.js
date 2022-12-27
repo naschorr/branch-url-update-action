@@ -112,7 +112,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
     try {
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = github.context.payload;
-        console.log(`The event payload: ${JSON.stringify(payload, undefined, 2)}`);
+        // console.log(`The event payload: ${JSON.stringify(payload, undefined, 2)}`);
 
         // Load the variables and perform validation if needed
         const fileWhitelist = JSON.parse(core.getInput('file-whitelist') || '[]');
