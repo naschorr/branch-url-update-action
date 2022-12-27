@@ -48,7 +48,7 @@ async function validateBranch(branchName) {
         repo: REPOSITORY
     });
 
-    console.log(`Branches: ${branches}`);
+    console.log(branches);
 
     return true;
 }
@@ -131,7 +131,6 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         // Load the variables and perform validation if needed
         const fileWhitelist = JSON.parse(core.getInput('file-whitelist') || '[]');
         const fileBlacklist = JSON.parse(core.getInput('file-blacklist') || '[]');
-        // const githubToken = core.getInput('github-token');
 
         const branch = core.getInput('target-branch');
         if (!(await validateBranch(branch))) {
@@ -142,7 +141,6 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         console.log(`Whitelist: ${fileWhitelist}`);
         console.log(`Blacklist: ${fileBlacklist}`);
         console.log(`Target branch: ${branch}`);
-        // console.log(`GITHUB_TOKEN: ${githubToken}`);
 
         // Find potential candidate files for updating
         const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
