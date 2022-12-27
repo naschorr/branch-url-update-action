@@ -15,10 +15,11 @@ jobs:
 
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.47
+        uses: naschorr/current-branch-text-updater-action@v0.0.48
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
-          # token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes back into repo
         uses: stefanzweifel/git-auto-commit-action@v4
