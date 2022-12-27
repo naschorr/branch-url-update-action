@@ -15,7 +15,7 @@ jobs:
 
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.51
+        uses: naschorr/current-branch-text-updater-action@v0.0.52
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
         env:
