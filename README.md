@@ -55,11 +55,11 @@ Updates GitHub links in text files (Markdown, reStructuredText, etc) to point to
 
 https://github.com/naschorr/current-branch-text-updater-action/blob/main/resources/images/logo.png
 
-<p align="center"><img src="https://raw.githubusercontent.com/naschorr/current-branch-text-updater-action/master/resources/images/logo.png" width="150"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/naschorr/current-branch-text-updater-action/main/resources/images/logo.png" width="150"/></p>
 
 Easily keep your Steam and Xbox save files for Deep Rock Galactic synced up! That means no more lost progress when swapping between platforms to play with your friends.
 
-<p align="center"><img src="https://raw.githubusercontent.com/naschorr/current-branch-text-updater-action/master/resources/images/example.png" width="800"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/naschorr/current-branch-text-updater-action/main/resources/images/example.png" width="800"/></p>
 
 > Here's an example of the DRGSS interface
 
@@ -95,7 +95,7 @@ Don't agree with DRGSS' choice? Click the save you'd like to keep to override it
 Access the save files yourself with a single click! Each save file has a <img src="https://raw.githubusercontent.com/naschorr/current-branch-text-updater-action/main/resources/icons_high_contrast/arrow_icon.png" width="24" /> button that'll open it for you.
 
 ### Save files are backed up during the sync operation
-Chose the wrong file accidentally? Just delete the invalid one, and rename the `*.backup` file back to the original name. Alternatively, check out the [wiki](https://github.com/naschorr/current-branch-text-updater-action/wiki/Troubleshooting#restoring-drgss-backups) page that goes over restoring backups.
+Chose the wrong file accidentally? Just delete the invalid one, and rename the `*.backup` file back to the original name. Alternatively, check out the [wiki](https://github.com/naschorr/current-branch-text-updater-action/main/Troubleshooting#restoring-drgss-backups) page that goes over restoring backups.
 
 ### Refresh the save files
 Has something changed? Hit the refresh button to update your save files before syncing.
