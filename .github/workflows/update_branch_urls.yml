@@ -15,7 +15,7 @@ jobs:
 
       - name: Update branch URLs to use the current branch
         id: update
-        uses: naschorr/current-branch-text-updater-action@v1
+        uses: naschorr/branch-url-update-action@v1
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
         env:
