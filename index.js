@@ -56,6 +56,7 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
     let updates = 0;
     let offset = 0;
     for (const match of matches) {
+        console.log("Before =================================================================================")
         console.log(data);
         console.log('========================================================================================');
 
@@ -64,8 +65,16 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         const size = sourceBranch.length;
         const index = match.index + match[1].length + offset;
 
+        // Don't bother if the current branch is the same as the target branch
+        if (sourceBranch == targetBranch) {
+            console.log(`branches equal`);
+            continue;
+        }
+
         // Was the old match a valid branch? Some false positives will crop up (ex: wikis)
-        if (!BRANCH_VALIDATOR.isValidBranchName(sourceBranch)) {
+        const val = BRANCH_VALIDATOR.isValidBranchName(sourceBranch);
+        console.log(`Validating branch: ${sourceBranch} - ${val}`);
+        if (!val) {
             console.log(`${sourceBranch} is invalid, continuing`);
             continue;
         }
@@ -79,6 +88,10 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
             inserted into the correct spot.
         */
         offset += targetBranch.length - size;
+
+        console.log("After ==================================================================================")
+        console.log(data);
+        console.log('========================================================================================');
     };
 
     // Save our changes
