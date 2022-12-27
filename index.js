@@ -2,14 +2,11 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const glob = require('@actions/glob');
 const fs = require('fs');
-const octokit = require('@octokit/action');
-const octokitAuth = require('@octokit/auth-action');
+const Repository = require('./repository');
+const BranchValidator = require('./branch_validator');
 
-// const auth = createActionAuth();
-// const authentication = await auth();
-const OCTOKIT = new octokit.Octokit();
-const OWNER = 'naschorr';
-const REPOSITORY = 'current-branch-text-updater-action';
+const REPOSITORY = new Repository(github.context.payload.repository.full_name);
+const BRANCH_VALIDATOR = new BranchValidator(REPOSITORY);
 
 /**
  * Process the provided whitelist and blacklist to find files to be updated. The blacklist will override the whitelist.
@@ -31,26 +28,15 @@ async function findCandidateFiles(whitelist, blacklist) {
 
 /**
  * Builds a RegExp to handle finding repository URLs
- * @param {string} repository The owner/repository name string (ex: torvalds/linux)
+ * @param {string} owner_name The owner of the repository (ex: torvalds)
+ * @param {string} repository_name The name of the repository (ex: linux)
  * @returns RegExp for finding repo URLs
  */
-function buildRepoUrlRegex(repository) {
-    const regexPreppedRepository = repository.replace('/', '\/');
-    const pattern = `(https?:\/\/.*github.*\.com\/${regexPreppedRepository}\/(?:blob\/)?)(.+?)(\/)`;
+function buildRepoUrlRegex(owner_name, repository_name) {
+    const pattern = `(https?:\/\/.*github.*\.com\/${owner_name}\/${repository_name}\/(?:blob\/)?)(.+?)(\/)`;
 
     // Global regex to get all matches at once
     return new RegExp(pattern, 'g');
-}
-
-async function validateBranch(branchName) {
-    const branches = await OCTOKIT.request('GET /repos/{owner}/{repo}/branches{?protected,per_page,page}', {
-        owner: OWNER,
-        repo: REPOSITORY
-    });
-
-    console.log(branches);
-
-    return true;
 }
 
 /**
@@ -76,7 +62,7 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
         const index = match.index + match[1].length + offset;
 
         // Was the old match a valid branch? Some false positives will crop up (ex: wikis)
-        if (!(await validateBranch(sourceBranch))) {
+        if (!BRANCH_VALIDATOR.isValidBranchName(sourceBranch)) {
             continue;
         }
 
@@ -108,7 +94,7 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
  * @returns {string[]} List of paths to files that've been updated
  */
 async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
-    const regex = buildRepoUrlRegex(github.context.payload.repository.full_name);
+    const regex = buildRepoUrlRegex(REPOSITORY.owner_name, REPOSITORY.repository_name);
 
     const updatedFiles = [];
     for (const file of files) {
@@ -133,7 +119,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         const fileBlacklist = JSON.parse(core.getInput('file-blacklist') || '[]');
 
         const branch = core.getInput('target-branch');
-        if (!(await validateBranch(branch))) {
+        if (!BRANCH_VALIDATOR.isValidBranchName(branch)) {
             console.log(`Target branch "${branch}" isn't a valid branch.`);
             return;
         }
