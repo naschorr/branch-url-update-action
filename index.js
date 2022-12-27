@@ -56,6 +56,9 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
     let updates = 0;
     let offset = 0;
     for (const match of matches) {
+        console.log(data);
+        console.log('========================================================================================');
+
         // Why are JS RegExp groups so janky?
         const sourceBranch = match[2];
         const size = sourceBranch.length;
@@ -63,6 +66,7 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
 
         // Was the old match a valid branch? Some false positives will crop up (ex: wikis)
         if (!BRANCH_VALIDATOR.isValidBranchName(sourceBranch)) {
+            console.log(`${sourceBranch} is invalid, continuing`);
             continue;
         }
 

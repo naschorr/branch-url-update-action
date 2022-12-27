@@ -34,17 +34,11 @@ class BranchValidator {
     }
 
     async isValidBranchName(branchName) {
-        if (this._branches.length == 0) {
+        if (this.branches.length == 0) {
             this._branches = await this.getBranchNames();
         }
 
-        console.log(`Branches: ${this.branches}`);
-
-        const val = this.branches.includes(branchName);
-
-        console.log(`Is ${branchName} valid? ${val}`);
-
-        return val;
+        return this.branches.includes(branchName);
     }
 }
 
