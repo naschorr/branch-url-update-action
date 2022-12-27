@@ -63,13 +63,12 @@ async function updateRepoUrlsInFile(file, repoUrlRegex, targetBranch) {
 
         // Don't bother if the current branch is the same as the target branch
         if (sourceBranch == targetBranch) {
-            console.log(`branches equal`);
             continue;
         }
 
         // Was the old match a valid branch? Some false positives will crop up (ex: wikis)
         if (!(await BRANCH_VALIDATOR.isValidBranchName(sourceBranch))) {
-            console.log(`${sourceBranch} is invalid, continuing`);
+            console.log(`Found branch name: '${sourceBranch}', which is invalid. Ignoring...`);
             continue;
         }
 
@@ -118,8 +117,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
 (async () => {
     try {
         // Get the JSON webhook payload for the event that triggered the workflow
-        // const payload = github.context.payload;
-        // console.log(`The event payload: ${JSON.stringify(payload, undefined, 2)}`);
+        // console.log(`The event payload: ${JSON.stringify(github.context.payload, undefined, 2)}`);
 
         // Load the variables and perform validation if needed
         const fileWhitelist = JSON.parse(core.getInput('file-whitelist') || '[]');
