@@ -1,7 +1,4 @@
-on:
-  push
-  pull_request:
-    types: [opened, reopened, closed]
+on: [push]
 
 jobs:
   current_branch_text_updater_job:
@@ -18,7 +15,7 @@ jobs:
 
       - name: Branch update action step
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.60
+        uses: naschorr/current-branch-text-updater-action@v0.0.61
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
         env:
