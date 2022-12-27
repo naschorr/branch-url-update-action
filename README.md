@@ -1,10 +1,36 @@
-# current-branch-text-updater-action
-Updates GitHub links in text files (Markdown, reStructuredText, etc) to point to the current branch
+# Branch URL Update Action 
+Updates GitHub links in text files (Markdown, reStructuredText, etc) to point to the current branch. Avoid manually updating your feature branches when merging, and keep everything in sync!
 
-https://github.com/naschorr/current-branch-text-updater-action/blob/main/resources/images/logo.png
+## Example workflow .yaml
+```
+on: [push]
 
-<p align="center"><img src="https://raw.githubusercontent.com/naschorr/current-branch-text-updater-action/main/resources/images/logo.png" width="150"/></p>
+jobs:
+  branch_url_update_action:
+    runs-on: ubuntu-latest
+    name: Update branch URLs to use the current branch
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3.2.0
 
-[wiki](https://github.com/naschorr/current-branch-text-updater-action/wiki/Troubleshooting#restoring-drgss-backups)
+      - name: Extract current branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo $GITHUB_REF_NAME)"
+        id: extract_branch
 
-[Electron.NET](https://github.com/ElectronNET/Electron.NET)
+      - name: Update branch URLs to use the current branch
+        id: update
+        uses: naschorr/branch-url-update-action@v1
+        with:
+          target-branch: ${{ steps.extract_branch.outputs.branch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes back into repository
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated repository branch names"
+
+      - name: Get the updated file paths
+        run: echo "Files ${{ steps.update.outputs.updated-files }}"
+```

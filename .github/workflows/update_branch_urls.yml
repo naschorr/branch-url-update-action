@@ -1,27 +1,27 @@
 on: [push]
 
 jobs:
-  current_branch_text_updater_job:
+  branch_url_update_action:
     runs-on: ubuntu-latest
-    name: Update branch reference to use the current branch
+    name: Update branch URLs to use the current branch
     steps:
-      - name: Checkout repo (all further actions are run from the repo root)
+      - name: Checkout the repository
         uses: actions/checkout@v3.2.0
 
-      - name: Extract branch name
+      - name: Extract current branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo $GITHUB_REF_NAME)"
         id: extract_branch
 
-      - name: Branch update action step
+      - name: Update branch URLs to use the current branch
         id: update
-        uses: naschorr/current-branch-text-updater-action@v0.0.61
+        uses: naschorr/branch-url-update-action@v1
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit changes back into repo
+      - name: Commit changes back into repository
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Updated repository branch names"

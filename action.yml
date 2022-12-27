@@ -1,5 +1,5 @@
-name: 'Current Branch Text Update Checker'
-description: 'Updates GitHub links in text files (Markdown, reStructuredText, etc) to point to the current branch '
+name: 'Branch URL Update Action'
+description: 'Updates GitHub links in text files (Markdown, reStructuredText, etc) to point to the current branch.'
 inputs:
   file-whitelist:
     description: 'JSON array of glob expressions corresponding to files/extensions that should be updated.'
@@ -17,4 +17,4 @@ outputs:
     description: 'JSON array of paths to files that were updated.'
 runs:
   using: 'node16'
-  main: 'index.js'
+  main: 'update_branch_urls.js'
