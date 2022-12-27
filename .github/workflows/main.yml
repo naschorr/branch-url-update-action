@@ -18,6 +18,7 @@ jobs:
         uses: naschorr/current-branch-text-updater-action@v0.0.44
         with:
           target-branch: ${{ steps.extract_branch.outputs.branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes back into repo
         uses: stefanzweifel/git-auto-commit-action@v4

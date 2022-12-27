@@ -2,6 +2,14 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const glob = require('@actions/glob');
 const fs = require('fs');
+const octokit = require('@octokit/action');
+const octokidAuth = require('')
+
+// const auth = createActionAuth();
+// const authentication = await auth();
+const OCTOKIT = new octokit.Octokit();
+const OWNER = 'naschorr';
+const REPOSITORY = 'current-branch-text-updater-action';
 
 /**
  * Process the provided whitelist and blacklist to find files to be updated. The blacklist will override the whitelist.
@@ -35,6 +43,13 @@ function buildRepoUrlRegex(repository) {
 }
 
 async function validateBranch(branchName) {
+    const branches = OCTOKIT.request('GET /repos/{owner}/{repo}/branches{?protected,per_page,page}', {
+        owner: OWNER,
+        repo: REPOSITORY
+    });
+
+    console.log(`Branches: ${branches}`);
+
     return true;
 }
 
@@ -116,6 +131,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         // Load the variables and perform validation if needed
         const fileWhitelist = JSON.parse(core.getInput('file-whitelist') || '[]');
         const fileBlacklist = JSON.parse(core.getInput('file-blacklist') || '[]');
+        // const githubToken = core.getInput('github-token');
 
         const branch = core.getInput('target-branch');
         if (!(await validateBranch(branch))) {
@@ -126,6 +142,7 @@ async function walkFilesAndUpdateRepoBranches(targetBranch, files) {
         console.log(`Whitelist: ${fileWhitelist}`);
         console.log(`Blacklist: ${fileBlacklist}`);
         console.log(`Target branch: ${branch}`);
+        // console.log(`GITHUB_TOKEN: ${githubToken}`);
 
         // Find potential candidate files for updating
         const files = await findCandidateFiles(fileWhitelist, fileBlacklist);
