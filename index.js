@@ -43,7 +43,7 @@ function buildRepoUrlRegex(repository) {
 }
 
 async function validateBranch(branchName) {
-    const branches = OCTOKIT.request('GET /repos/{owner}/{repo}/branches{?protected,per_page,page}', {
+    const branches = await OCTOKIT.request('GET /repos/{owner}/{repo}/branches{?protected,per_page,page}', {
         owner: OWNER,
         repo: REPOSITORY
     });
